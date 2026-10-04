@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คลังผลงาน Si Pharmacist Competency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  // ===== ตั้งค่า: วาง Web app URL ที่ลงท้ายด้วย /exec ระหว่างเครื่องหมาย ' ' =====
+  const API_URL = 'https://script.google.com/macros/s/AKfycbybE3xEZ18apwn7SebBY3I7hWfAAsPLq6qPpkq6OaOjXmwoiFEqENGKLHiXjIW1RV2YWA/exec';
+</script>
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --surface: #FFFFFF;
+    --ink: #1C2A3A;
+    --ink-soft: #6B7A8C;
+    --line: #E6EBF0;
+    --accent: #12A38A;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #F1F8F6;
+    --rank: #D99A2B;
+    --danger: #D64545;
+    --focus: #3B82F6;
+    --radius-lg: 14px;
+    --radius-sm: 10px;
+    font-family: 'IBM Plex Sans Thai', 'Sukhumvit Set', 'Leelawadee UI', 'Noto Sans Thai', system-ui, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  [hidden] { display: none !important; }
+
+  /* ---------- เข้าระบบ ---------- */
+  .login {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px 20px;
+  }
+  .login-box { width: 100%; max-width: 420px; }
+  .login h1 { margin: 0 0 32px; font-weight: 600; }
+  .title-stack { display: flex; flex-direction: column; }
+  .title-stack .t-kicker {
+    font-size: 18px; font-weight: 500; color: var(--accent);
+    padding-bottom: 10px; margin-bottom: 14px;
+    border-bottom: 2px solid var(--accent); align-self: flex-start;
+  }
+  .title-stack .t-main {
+    font-size: clamp(38px, 11vw, 52px); line-height: 1.02; font-weight: 600;
+    letter-spacing: -0.025em; color: var(--ink);
+  }
+  .login p.lead { margin: 0 0 28px; color: var(--ink-soft); }
+  .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: #FAFBFC;
+  }
+  .field input:focus { border-color: var(--accent); outline: none; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border: 0; border-radius: var(--radius-sm);
+    padding: 10px 16px; font-weight: 600; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink);
+  }
+  .btn:disabled { opacity: .6; cursor: wait; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn.block { width: 100%; padding: 14px; margin-top: 14px; font-size: 17px; }
+  .msg-error { color: var(--danger); margin: 10px 0 0; min-height: 1.6em; }
+  .notice { margin-top: 24px; font-size: 14px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 14px; }
+  .notice button { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font-size: 14px; }
+  .notice .detail { margin-top: 8px; }
+
+  /* ---------- ส่วนหัว ---------- */
+  header.top {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; }
+  .brand { font-weight: 700; font-size: 18px; }
+  .who { display: flex; align-items: center; gap: 12px; font-size: 15px; color: var(--ink-soft); }
+  .who button { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 4px; text-decoration: underline; }
+
+  .hero { padding: 36px 0 20px; }
+  .hero h1 { font-size: clamp(26px, 4vw, 38px); line-height: 1.25; margin: 0 0 6px; font-weight: 600; letter-spacing: -0.015em; max-width: 22ch; }
+  .hero p { margin: 0 0 22px; color: var(--ink-soft); max-width: 60ch; }
+  .search {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 4px 6px 4px 18px;
+    background: #FAFBFC;
+    max-width: 760px;
+  }
+  .search svg { flex: none; color: var(--ink-soft); }
+  .search input { flex: 1; border: 0; background: transparent; padding: 14px 0; font-size: 19px; min-width: 0; }
+  .search input:focus { outline: none; }
+  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .search .clear { background: none; border: 0; padding: 8px 12px; cursor: pointer; color: var(--ink-soft); font-size: 15px; }
+
+  /* ---------- ยอดนิยม ---------- */
+  .popular { margin: 26px 0 8px; }
+  .popular h2, .results-head h2 { font-size: 19px; margin: 0 0 10px; }
+  .pop-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+  .pop-list button {
+    width: 100%; height: 100%; text-align: left; cursor: pointer;
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .pop-rank { font-size: 26px; line-height: 1; font-weight: 700; color: var(--rank); min-width: 1.1em; }
+  .pop-title { font-weight: 600; font-size: 15px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pop-meta { font-size: 13px; color: var(--ink-soft); }
+
+  /* ---------- ตัวกรอง ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin: 24px 0 14px; }
+  .filters label { display: flex; flex-direction: column; font-size: 13px; color: var(--ink-soft); gap: 4px; flex: 1 1 160px; max-width: 240px; }
+  .filters select {
+    padding: 9px 10px; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    background: var(--surface); font-size: 15px; color: var(--ink);
+  }
+  .results-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .count { color: var(--ink-soft); font-size: 15px; }
+
+  /* ---------- การ์ดผลงาน ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin: 8px 0 48px; padding: 0; list-style: none; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .thumb {
+    aspect-ratio: 4 / 3; background: #F4F6F8; border-bottom: 1px solid var(--line); position: relative; overflow: hidden;
+    display: grid; place-items: center; color: var(--ink-soft); font-size: 13px;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .fmt {
+    position: absolute; left: 10px; top: 10px;
+    background: rgba(255,255,255,.92); border: 1px solid var(--line); color: var(--ink); border-radius: 6px;
+    font-size: 12px; font-weight: 600; padding: 2px 8px;
+  }
+  .card-body { padding: 14px 16px 6px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .card h3 { font-size: 17px; line-height: 1.4; margin: 0; }
+  .purpose { font-size: 14px; color: var(--ink-soft); margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .meta { font-size: 13px; color: var(--ink-soft); margin: 0; }
+  .meta strong { color: var(--ink); font-weight: 600; }
+  .stats { display: flex; gap: 14px; font-size: 13px; color: var(--ink-soft); margin-top: auto; padding-top: 6px; }
+  .card-actions { display: flex; gap: 8px; padding: 12px 16px 16px; align-items: center; }
+  .card-actions .btn { flex: 1; }
+  .like {
+    border: 1.5px solid var(--line); background: transparent; border-radius: var(--radius-sm);
+    padding: 8px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-weight: 600;
+  }
+  .like[aria-pressed="true"] { color: var(--danger); border-color: currentColor; }
+  .like svg { width: 18px; height: 18px; }
+
+  .empty { text-align: center; padding: 48px 20px; color: var(--ink-soft); }
+  .empty .btn { margin-top: 12px; }
+  .loading { padding: 60px 0; text-align: center; color: var(--ink-soft); }
+
+  /* ---------- กล่องแจ้งเตือน ---------- */
+  dialog {
+    border: 0; border-radius: var(--radius-lg); padding: 24px; max-width: 440px; width: calc(100% - 32px);
+    background: var(--surface); color: var(--ink);
+  }
+  dialog::backdrop { background: rgba(28, 42, 58, .25); }
+  dialog h2 { margin: 0 0 10px; font-size: 20px; }
+  dialog p { margin: 0 0 14px; }
+  dialog .check { display: flex; gap: 8px; align-items: center; font-size: 15px; margin-bottom: 18px; }
+  dialog .row { display: flex; gap: 10px; justify-content: flex-end; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+    background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: var(--radius-sm);
+    font-size: 15px; max-width: calc(100% - 32px); z-index: 10;
+  }
+
+  @media (max-width: 600px) {
+    .filters label { max-width: none; flex-basis: calc(50% - 5px); }
+    .hero { padding-top: 24px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .like[aria-pressed="true"] svg { animation: pop .25s ease-out; }
+    @keyframes pop { 50% { transform: scale(1.25); } }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== หน้ากรอก SAP ID ===== -->
+<main id="loginView" class="login" hidden>
+  <div class="login-box">
+    <h1 class="title-stack">
+      <span class="t-kicker">คลังผลงาน</span>
+      <span class="t-main">Si Pharmacist</span>
+      <span class="t-main">Competency</span>
+    </h1>
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="sap">รหัสพนักงาน (SAP ID)</label>
+        <input id="sap" name="sap" inputmode="numeric" autocomplete="off" required>
+      </div>
+      <button class="btn block" id="loginBtn" type="submit">เข้าสู่ระบบ</button>
+      <p class="msg-error" id="loginError" role="alert"></p>
+    </form>
+    <div class="notice">
+      ระบบบันทึกการเข้าใช้ การดู การดาวน์โหลด และการกดไลค์ เพื่อจัดทำสถิติการใช้งาน
+    </div>
+  </div>
+</main>
+
+<!-- ===== หน้าหลัก ===== -->
+<div id="appView" hidden>
+  <header class="top">
+    <div class="wrap">
+      <span class="brand">คลังผลงาน Si Pharmacist Competency</span>
+      <span class="who"><span id="hello"></span><button type="button" id="logoutBtn">ออกจากระบบ</button></span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>ค้นหาความรู้ที่ผ่านการรับรองแล้ว</h1>
+      <p>พิมพ์ชื่อยา หัวข้อ หรือหน่วยงาน แล้วกดดูหรือดาวน์โหลดผลงานไปใช้ได้ทันที</p>
+      <div class="search" role="search">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="เช่น Methotrexate, ยาแก้ปวด, ห้องยา" aria-label="ค้นหาผลงาน" autocomplete="off">
+        <button type="button" class="clear" id="clearQ" hidden>ล้าง</button>
+      </div>
+    </section>
+
+    <section class="popular" id="popularSec" hidden aria-labelledby="popH">
+      <h2 id="popH">ยอดนิยมเดือนนี้</h2>
+      <ol class="pop-list" id="popList"></ol>
+    </section>
+
+    <div class="filters">
+      <label>ประเภทผลงาน<select id="fType"></select></label>
+      <label>หมวดมาตรฐาน<select id="fCat"></select></label>
+      <label>หน่วยงานเจ้าของผลงาน<select id="fUnit"></select></label>
+      <label>กลุ่มเป้าหมาย<select id="fAud"></select></label>
+      <label>เรียงตาม
+        <select id="sort">
+          <option value="new">ใหม่ล่าสุด</option>
+          <option value="views">ยอดดูสูงสุด</option>
+          <option value="downloads">ยอดดาวน์โหลดสูงสุด</option>
+          <option value="likes">ยอดไลค์สูงสุด</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="results-head">
+      <h2>ผลงานทั้งหมด</h2>
+      <span class="count" id="count" aria-live="polite"></span>
+    </div>
+    <div class="loading" id="loading">กำลังโหลดรายการผลงาน…</div>
+    <ul class="grid" id="grid"></ul>
+    <div class="empty" id="empty" hidden>
+      <p id="emptyText"></p>
+      <button class="btn ghost" type="button" id="resetBtn">ล้างคำค้นและตัวกรอง</button>
+    </div>
+  </main>
+</div>
+
+<!-- ===== แจ้งก่อนเปิด Google Drive ครั้งแรก ===== -->
+<dialog id="driveDlg" aria-labelledby="driveH">
+  <h2 id="driveH">ผลงานเปิดผ่าน Google Drive</h2>
+  <p>ต้อง login ด้วยบัญชี @mahidol.ac.th หากขึ้นหน้าขอสิทธิ์เข้าถึง ให้กดรูปโปรไฟล์มุมขวาบนแล้วสลับเป็นบัญชี Mahidol</p>
+  <label class="check"><input type="checkbox" id="dontShow"> ไม่ต้องแสดงข้อความนี้อีก</label>
+  <div class="row">
+    <button class="btn ghost" type="button" id="dlgCancel">ยกเลิก</button>
+    <button class="btn" type="button" id="dlgGo">เปิดผลงาน</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+    del(k) { try { localStorage.removeItem(k); } catch (e) {} },
+  };
+  const TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+  const FORMAT_LABEL = { pdf: 'PDF', image: 'ภาพ', video: 'วิดีโอ' };
+
+  let token = store.get('op_token');
+  let items = [];
+  let popular = [];
+  const thumbCache = {};
+
+  // ---------- เรียก API ----------
+  function deviceId() {
+    let d = store.get('op_device');
+    if (!d) { d = 'd' + Math.random().toString(36).slice(2) + Date.now().toString(36); store.set('op_device', d); }
+    return d;
+  }
+
+  async function api(action, data = {}) {
+    if (!/^https:\/\/script\.google\.com\//.test(API_URL)) throw new Error('ยังไม่ได้ใส่ API_URL ในไฟล์ index.html');
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify(Object.assign({ action, token, ua: navigator.userAgent }, data)),
+    });
+    const json = await res.json();
+    if (json.error === 'session_expired') { logoutLocal(); throw new Error('หมดเวลาการใช้งาน กรุณากรอก SAP ID อีกครั้ง'); }
+    return json;
+  }
+
+  function toast(text) {
+    const t = $('toast');
+    t.textContent = text;
+    t.hidden = false;
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => { t.hidden = true; }, 3500);
+  }
+
+  // ---------- เข้า / ออกระบบ ----------
+  function showLogin() {
+    $('appView').hidden = true;
+    $('loginView').hidden = false;
+    $('sap').focus();
+  }
+
+  function logoutLocal() {
+    token = null;
+    store.del('op_token');
+    showLogin();
+  }
+
+  $('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const sap = $('sap').value.trim();
+    const err = $('loginError');
+    err.textContent = '';
+    if (!sap) { err.textContent = 'กรุณากรอก SAP ID'; return; }
+    $('loginBtn').disabled = true;
+    try {
+      const r = await api('login', { sap, device: deviceId() });
+      if (r.ok) {
+        token = r.token;
+        store.set('op_token', token);
+        $('sap').value = '';
+        startApp(r.firstName);
+      } else if (r.error === 'locked') {
+        err.textContent = 'กรอกผิดหลายครั้ง กรุณารอ ' + r.minutes + ' นาทีแล้วลองใหม่';
+      } else if (r.error === 'not_found') {
+        err.textContent = 'ไม่พบรหัสนี้ กรุณาตรวจสอบ หรือติดต่อผู้ดูแลระบบ';
+      } else {
+        err.textContent = 'เข้าระบบไม่สำเร็จ กรุณาลองใหม่';
+      }
+    } catch (ex) {
+      err.textContent = ex.message || 'เชื่อมต่อระบบไม่ได้ กรุณาลองใหม่';
+    } finally {
+      $('loginBtn').disabled = false;
+    }
+  });
+
+  $('logoutBtn').addEventListener('click', () => {
+    api('logout').catch(() => {});
+    logoutLocal();
+  });
+
+  // ---------- โหลดรายการ ----------
+  async function startApp(firstName) {
+    $('loginView').hidden = true;
+    $('appView').hidden = false;
+    $('hello').textContent = firstName ? 'สวัสดี คุณ' + firstName : '';
+    $('loading').hidden = false;
+    $('grid').innerHTML = '';
+    try {
+      const r = await api('list');
+      if (!r.ok) throw new Error('โหลดรายการไม่สำเร็จ');
+      if (r.firstName) $('hello').textContent = 'สวัสดี คุณ' + r.firstName;
+      items = r.items;
+      popular = r.popular || [];
+      buildFilters();
+      renderPopular();
+      render();
+    } catch (ex) {
+      toast(ex.message);
+    } finally {
+      $('loading').hidden = true;
+    }
+  }
+
+  function uniq(key) {
+    return [...new Set(items.map(i => i[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'th'));
+  }
+
+  function fillSelect(sel, values) {
+    const cur = sel.value;
+    sel.innerHTML = '';
+    sel.append(new Option('ทั้งหมด', ''));
+    values.forEach(v => sel.append(new Option(v, v)));
+    if (values.includes(cur)) sel.value = cur;
+  }
+
+  function buildFilters() {
+    fillSelect($('fType'), uniq('type'));
+    fillSelect($('fCat'), uniq('category'));
+    fillSelect($('fUnit'), uniq('unit'));
+    fillSelect($('fAud'), uniq('audience'));
+  }
+
+  function thaiMonthYear(iso) {
+    if (!iso) return '';
+    const [y, m] = iso.split('-').map(Number);
+    return TH_MONTHS[m - 1] + ' ' + (y + 543);
+  }
+
+  // ---------- ยอดนิยม ----------
+  function renderPopular() {
+    const list = $('popList');
+    list.innerHTML = '';
+    const byId = Object.fromEntries(items.map(i => [i.id, i]));
+    const top = popular.map(id => byId[id]).filter(Boolean);
+    $('popularSec').hidden = top.length === 0;
+    top.forEach((it, idx) => {
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.innerHTML = '<span class="pop-rank"></span><span><span class="pop-title"></span><span class="pop-meta"></span></span>';
+      b.querySelector('.pop-rank').textContent = idx + 1;
+      b.querySelector('.pop-title').textContent = it.title;
+      b.querySelector('.pop-meta').textContent = 'ดู ' + it.views.toLocaleString('th-TH') + ' ครั้ง';
+      b.addEventListener('click', () => openWork(it, 'view'));
+      li.append(b);
+      list.append(li);
+    });
+  }
+
+  // ---------- ค้นหา กรอง เรียง ----------
+  function currentList() {
+    const q = $('q').value.trim().toLowerCase();
+    const f = { type: $('fType').value, category: $('fCat').value, unit: $('fUnit').value, audience: $('fAud').value };
+    let list = items.filter(i =>
+      (!f.type || i.type === f.type) &&
+      (!f.category || i.category === f.category) &&
+      (!f.unit || i.unit === f.unit) &&
+      (!f.audience || i.audience === f.audience) &&
+      (!q || [i.title, i.purpose, i.unit, i.category, i.type, i.id].join(' ').toLowerCase().includes(q))
+    );
+    const s = $('sort').value;
+    list = list.slice().sort((a, b) =>
+      s === 'new' ? (b.submitted || '').localeCompare(a.submitted || '') : (b[s] - a[s]) || (b.submitted || '').localeCompare(a.submitted || '')
+    );
+    return list;
+  }
+
+  function render() {
+    const list = currentList();
+    const grid = $('grid');
+    grid.innerHTML = '';
+    $('count').textContent = list.length.toLocaleString('th-TH') + ' ชิ้น';
+    $('empty').hidden = list.length > 0 || items.length === 0;
+    if (!list.length) {
+      const q = $('q').value.trim();
+      $('emptyText').textContent = q ? 'ไม่พบผลงานที่ตรงกับ "' + q + '"' : 'ไม่พบผลงานในตัวกรองที่เลือก';
+    }
+    list.forEach(it => grid.append(card(it)));
+    observeThumbs();
+  }
+
+  function card(it) {
+    const li = document.createElement('li');
+    li.className = 'card';
+    li.dataset.id = it.id;
+    li.innerHTML = `
+      <div class="thumb">${it.hasThumb ? '' : 'ไม่มีภาพตัวอย่าง'}<span class="fmt"></span></div>
+      <div class="card-body">
+        <h3></h3>
+        <p class="purpose"></p>
+        <p class="meta"><strong class="unit"></strong><br><span class="sent"></span></p>
+        <div class="stats"><span class="sv"></span><span class="sd"></span></div>
+      </div>
+      <div class="card-actions">
+        <button class="btn view" type="button">ดูผลงาน</button>
+        <button class="btn ghost dl" type="button">ดาวน์โหลด</button>
+        <button class="like" type="button">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.5 2.9 4.5 6.6 4.5c2.1 0 3.6 1.1 5.4 3.2 1.8-2.1 3.3-3.2 5.4-3.2 3.7 0 5.7 4 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg>
+          <span class="lc"></span>
+        </button>
+      </div>`;
+    li.querySelector('.fmt').textContent = [it.type, FORMAT_LABEL[it.format]].filter(Boolean).join(' · ');
+    li.querySelector('h3').textContent = it.title;
+    li.querySelector('.purpose').textContent = it.purpose;
+    li.querySelector('.unit').textContent = it.unit;
+    li.querySelector('.sent').textContent = [it.category, it.submitted ? 'ส่งเมื่อ ' + thaiMonthYear(it.submitted) : ''].filter(Boolean).join(' · ');
+    updateStats(li, it);
+    li.querySelector('.view').addEventListener('click', () => openWork(it, 'view'));
+    li.querySelector('.dl').addEventListener('click', () => openWork(it, 'download'));
+    li.querySelector('.like').addEventListener('click', () => toggleLike(it, li));
+    if (thumbCache[it.id]) setThumb(li, thumbCache[it.id], it.title);
+    return li;
+  }
+
+  function updateStats(li, it) {
+    li.querySelector('.sv').textContent = 'ดู ' + it.views.toLocaleString('th-TH');
+    li.querySelector('.sd').textContent = 'ดาวน์โหลด ' + it.downloads.toLocaleString('th-TH');
+    const like = li.querySelector('.like');
+    like.setAttribute('aria-pressed', String(!!it.liked));
+    like.setAttribute('aria-label', (it.liked ? 'เลิกถูกใจ ' : 'ถูกใจ ') + it.title);
+    li.querySelector('.lc').textContent = it.likes.toLocaleString('th-TH');
+  }
+
+  let searchTimer;
+  $('q').addEventListener('input', () => {
+    $('clearQ').hidden = !$('q').value;
+    render();
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      const q = $('q').value.trim();
+      if (q.length >= 2) api('search', { q, count: currentList().length }).catch(() => {});
+    }, 1500);
+  });
+  $('clearQ').addEventListener('click', () => { $('q').value = ''; $('clearQ').hidden = true; render(); $('q').focus(); });
+  ['fType', 'fCat', 'fUnit', 'fAud', 'sort'].forEach(id => $(id).addEventListener('change', render));
+  $('resetBtn').addEventListener('click', () => {
+    $('q').value = ''; $('clearQ').hidden = true;
+    ['fType', 'fCat', 'fUnit', 'fAud'].forEach(id => { $(id).value = ''; });
+    render();
+  });
+
+  // ---------- thumbnail: โหลดเมื่อเลื่อนมาเห็น ----------
+  const pending = new Set();
+  let thumbTimer;
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      io.unobserve(en.target);
+      const id = en.target.dataset.id;
+      if (!thumbCache[id]) pending.add(id);
+    });
+    clearTimeout(thumbTimer);
+    thumbTimer = setTimeout(loadThumbs, 120);
+  }, { rootMargin: '300px' }) : null;
+
+  function observeThumbs() {
+    document.querySelectorAll('#grid .card').forEach(li => {
+      const it = items.find(i => i.id === li.dataset.id);
+      if (!it || !it.hasThumb || thumbCache[it.id]) return;
+      if (io) io.observe(li); else pending.add(it.id);
+    });
+    if (!io) loadThumbs();
+  }
+
+  async function loadThumbs() {
+    const ids = [...pending].slice(0, 24);
+    if (!ids.length) return;
+    ids.forEach(id => pending.delete(id));
+    try {
+      const r = await api('thumbs', { ids });
+      Object.entries(r.thumbs || {}).forEach(([id, data]) => {
+        thumbCache[id] = data;
+        const li = document.querySelector('#grid .card[data-id="' + CSS.escape(id) + '"]');
+        const it = items.find(i => i.id === id);
+        if (li && it) setThumb(li, data, it.title);
+      });
+    } catch (ex) { /* ไม่มีภาพก็ใช้งานได้ */ }
+    if (pending.size) loadThumbs();
+  }
+
+  function setThumb(li, data, title) {
+    const box = li.querySelector('.thumb');
+    if (box.querySelector('img')) return;
+    const img = new Image();
+    img.alt = 'ภาพตัวอย่าง ' + title;
+    img.src = data;
+    box.firstChild && box.firstChild.nodeType === 3 && box.firstChild.remove();
+    box.prepend(img);
+  }
+
+  // ---------- เปิดผลงาน ----------
+  let pendingOpen = null;
+
+  function openWork(it, kind) {
+    if (store.get('op_skip_notice') === '1') { go(it, kind); return; }
+    pendingOpen = { it, kind };
+    $('dontShow').checked = false;
+    $('driveDlg').showModal();
+  }
+
+  $('dlgCancel').addEventListener('click', () => { pendingOpen = null; $('driveDlg').close(); });
+  $('dlgGo').addEventListener('click', () => {
+    if ($('dontShow').checked) store.set('op_skip_notice', '1');
+    $('driveDlg').close();
+    if (pendingOpen) go(pendingOpen.it, pendingOpen.kind);
+    pendingOpen = null;
+  });
+
+  async function go(it, kind) {
+    // เปิดแท็บทันทีระหว่างที่ผู้ใช้กด เพื่อไม่ให้เบราว์เซอร์บล็อก popup
+    const win = window.open('', '_blank');
+    if (win) win.document.write('<p style="font-family:sans-serif;padding:24px">กำลังเปิดผลงาน…</p>');
+    try {
+      const r = await api('track', { id: it.id, kind });
+      if (!r.ok) throw new Error('เปิดผลงานไม่สำเร็จ');
+      if (win) win.location.replace(r.url); else window.location.href = r.url;
+      if (kind === 'view') it.views++; else it.downloads++;
+      const li = document.querySelector('#grid .card[data-id="' + CSS.escape(it.id) + '"]');
+      if (li) updateStats(li, it);
+    } catch (ex) {
+      if (win) win.close();
+      toast(ex.message);
+    }
+  }
+
+  // ---------- ไลค์ ----------
+  async function toggleLike(it, li) {
+    const want = !it.liked;
+    it.liked = want;
+    it.likes = Math.max(0, it.likes + (want ? 1 : -1));
+    updateStats(li, it);
+    try {
+      const r = await api('like', { id: it.id, like: want });
+      if (!r.ok) throw new Error();
+      if (typeof r.likes === 'number') { it.likes = r.likes; updateStats(li, it); }
+    } catch (ex) {
+      it.liked = !want;
+      it.likes = Math.max(0, it.likes + (want ? -1 : 1));
+      updateStats(li, it);
+      toast('บันทึกการกดไลค์ไม่สำเร็จ กรุณาลองใหม่');
+    }
+  }
+
+  // ---------- เริ่มต้น ----------
+  if (token) {
+    api('me').then(r => r.ok ? startApp(r.firstName) : showLogin()).catch(() => showLogin());
+  } else {
+    showLogin();
+  }
+})();
+</script>
+</body>
+</html>
