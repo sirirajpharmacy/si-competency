@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>สถิติ admin · คลังผลงาน Si Pharmacist Competency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  // ใช้ URL เดียวกับ index.html
+  const API_URL = 'https://script.google.com/macros/s/AKfycbybE3xEZ18apwn7SebBY3I7hWfAAsPLq6qPpkq6OaOjXmwoiFEqENGKLHiXjIW1RV2YWA/exec';
+</script>
+<style>
+  :root {
+    --bg: #FFFFFF; --soft: #F6F8FA; --ink: #1C2A3A; --ink-soft: #6B7A8C; --line: #E6EBF0;
+    --accent: #12A38A; --accent-soft: #E8F6F2; --line2: #7C8CF8; --warn: #D99A2B; --danger: #D64545; --focus: #3B82F6;
+    font-family: 'IBM Plex Sans Thai', 'Sukhumvit Set', 'Leelawadee UI', system-ui, sans-serif;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-size: 15px; line-height: 1.55; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+  .btn { border: 0; border-radius: 10px; padding: 9px 14px; font-weight: 600; cursor: pointer; background: var(--accent); color: #fff; }
+  .btn.ghost { background: #fff; color: var(--ink); border: 1.5px solid var(--line); }
+  .btn:disabled { opacity: .6; cursor: wait; }
+
+  /* login */
+  .login { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+  .login-box { width: 100%; max-width: 380px; }
+  .login h1 { margin: 0 0 4px; font-size: 26px; font-weight: 600; }
+  .login p { margin: 0 0 22px; color: var(--ink-soft); }
+  .login input { width: 100%; padding: 12px 14px; font-size: 17px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--soft); }
+  .login input:focus { outline: none; border-color: var(--accent); }
+  .login .btn { width: 100%; margin-top: 12px; padding: 12px; }
+  .err { color: var(--danger); min-height: 1.5em; margin: 8px 0 0; }
+
+  /* top */
+  header.top { border-bottom: 1px solid var(--line); }
+  header.top .wrap { display: flex; justify-content: space-between; align-items: center; min-height: 58px; gap: 12px; }
+  header .brand { font-weight: 600; }
+  header .brand span { color: var(--ink-soft); font-weight: 400; }
+  header button { background: none; border: 0; color: var(--accent); text-decoration: underline; cursor: pointer; }
+
+  /* filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; padding: 18px 0 8px; }
+  .filters label { display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--ink-soft); }
+  .filters input, .filters select { padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); min-width: 140px; }
+  .quick { display: flex; gap: 6px; flex-wrap: wrap; }
+  .quick button { background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; cursor: pointer; font-size: 13px; }
+
+  /* tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 16px 0; }
+  .tile { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .tile .n { font-size: 30px; font-weight: 600; line-height: 1.1; }
+  .tile .l { color: var(--ink-soft); font-size: 13px; }
+  .tile.main { background: var(--accent-soft); border-color: transparent; }
+
+  .chart { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 6px; margin-bottom: 20px; }
+  .chart h2 { margin: 0 0 4px; font-size: 16px; }
+  .legend { display: flex; gap: 16px; font-size: 13px; color: var(--ink-soft); margin-bottom: 6px; }
+  .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .chart svg { width: 100%; height: auto; display: block; }
+
+  /* tabs */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+  .tabs button { background: none; border: 0; padding: 10px 14px; cursor: pointer; color: var(--ink-soft); border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+  .panel { padding: 16px 0 40px; }
+  .panel h3 { font-size: 15px; margin: 18px 0 8px; }
+  .panel h3:first-child { margin-top: 0; }
+  .note { color: var(--ink-soft); font-size: 13px; margin: 0 0 10px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+
+  .tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  th { background: var(--soft); font-weight: 600; white-space: nowrap; cursor: pointer; user-select: none; }
+  th[data-dir="asc"]::after { content: ' ▲'; font-size: 10px; }
+  th[data-dir="desc"]::after { content: ' ▼'; font-size: 10px; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--soft); }
+  .pill.over { background: #FCEAEA; color: var(--danger); }
+  .empty { color: var(--ink-soft); padding: 14px; }
+  .person { display: flex; gap: 8px; margin-bottom: 12px; }
+  .person input { padding: 8px 12px; border: 1.5px solid var(--line); border-radius: 10px; }
+  .loading { color: var(--ink-soft); padding: 30px 0; }
+  .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; z-index: 9; }
+</style>
+</head>
+<body>
+
+<main id="loginView" class="login" hidden>
+  <form class="login-box" id="loginForm">
+    <h1>หน้าสถิติ admin</h1>
+    <p>คลังผลงาน Si Pharmacist Competency</p>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="รหัสผ่าน admin" aria-label="รหัสผ่าน admin">
+    <button class="btn" id="loginBtn" type="submit">เข้าสู่ระบบ</button>
+    <p class="err" id="loginErr" role="alert"></p>
+  </form>
+</main>
+
+<div id="appView" hidden>
+  <header class="top"><div class="wrap">
+    <span class="brand">สถิติการใช้งาน <span>· คลังผลงาน Si Pharmacist Competency</span></span>
+    <button type="button" id="logoutBtn">ออกจากระบบ</button>
+  </div></header>
+
+  <main class="wrap">
+    <div class="filters">
+      <label>ตั้งแต่<input type="date" id="from"></label>
+      <label>ถึง<input type="date" id="to"></label>
+      <label>ประเภทผลงาน<select id="fType"><option value="">ทั้งหมด</option></select></label>
+      <label>หมวดมาตรฐาน<select id="fCat"><option value="">ทั้งหมด</option></select></label>
+      <label>สังกัดผู้ใช้<select id="fUnit"><option value="">ทั้งหมด</option></select></label>
+      <button class="btn" id="applyBtn" type="button">ดูสถิติ</button>
+    </div>
+    <div class="quick" aria-label="ช่วงเวลาด่วน">
+      <button type="button" data-q="7">7 วันล่าสุด</button>
+      <button type="button" data-q="30">30 วันล่าสุด</button>
+      <button type="button" data-q="month">เดือนนี้</button>
+      <button type="button" data-q="year">ปีนี้</button>
+    </div>
+
+    <div class="loading" id="loading" hidden>กำลังคำนวณสถิติ…</div>
+    <div id="content" hidden>
+      <div class="tiles" id="tiles"></div>
+      <div class="chart">
+        <h2>การใช้งานรายวัน</h2>
+        <div class="legend"><span><i style="background:var(--accent)"></i>ผู้ใช้ไม่ซ้ำ</span><span><i style="background:var(--line2)"></i>ยอดดู</span></div>
+        <div id="chart"></div>
+      </div>
+
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-t="works" aria-selected="true">ผลงาน</button>
+        <button role="tab" data-t="units" aria-selected="false">หน่วยงานและตำแหน่ง</button>
+        <button role="tab" data-t="cross" aria-selected="false">ใช้ข้ามหน่วยงาน</button>
+        <button role="tab" data-t="watch" aria-selected="false">ต้องติดตาม</button>
+        <button role="tab" data-t="search" aria-selected="false">คำค้น</button>
+        <button role="tab" data-t="person" aria-selected="false">รายบุคคล</button>
+      </div>
+
+      <section class="panel" data-p="works">
+        <div class="actions">
+          <button class="btn ghost" data-export="works" type="button">Export สรุปรายผลงาน (ไม่มีชื่อ)</button>
+          <button class="btn ghost" data-export="raw" type="button">Export รายบุคคล</button>
+        </div>
+        <p class="note">ดู ดาวน์โหลด และไลค์ นับเฉพาะช่วงวันที่ที่เลือก ส่วนคอลัมน์ "สะสม" นับตั้งแต่เริ่มระบบ</p>
+        <div class="tbl" id="tWorks"></div>
+      </section>
+
+      <section class="panel" data-p="units" hidden>
+        <div class="actions"><button class="btn ghost" data-export="units" type="button">Export สรุปรายหน่วยงาน (ไม่มีชื่อ)</button></div>
+        <h3>แยกตามสังกัดผู้ใช้</h3><div class="tbl" id="tUnits"></div>
+        <h3>แยกตามตำแหน่ง</h3><div class="tbl" id="tRoles"></div>
+      </section>
+
+      <section class="panel" data-p="cross" hidden>
+        <p class="note">จำนวนครั้งที่ผู้ใช้จากหน่วยงานหนึ่ง ดูหรือดาวน์โหลดผลงานของอีกหน่วยงาน (30 คู่แรก)</p>
+        <div class="tbl" id="tCross"></div>
+      </section>
+
+      <section class="panel" data-p="watch" hidden>
+        <h3>ครบกำหนดทบทวน หรือจะครบภายใน 30 วัน</h3><div class="tbl" id="tReview"></div>
+        <h3>ไม่มีคนดูเลยใน 90 วัน</h3>
+        <p class="note">ไม่นับผลงานที่เพิ่งเตรียมไม่ถึง 90 วัน</p>
+        <div class="tbl" id="tNoViews"></div>
+      </section>
+
+      <section class="panel" data-p="search" hidden>
+        <h3>ค้นแล้วไม่เจอผลงาน</h3>
+        <p class="note">หัวข้อที่บุคลากรต้องการ แต่ยังไม่มีผลงาน</p>
+        <div class="tbl" id="tZero"></div>
+        <h3>คำค้นยอดนิยม</h3><div class="tbl" id="tTop"></div>
+      </section>
+
+      <section class="panel" data-p="person" hidden>
+        <form class="person" id="personForm">
+          <input id="psap" inputmode="numeric" placeholder="SAP ID" aria-label="SAP ID">
+          <button class="btn" type="submit">ค้นหา</button>
+        </form>
+        <p class="note">การค้นประวัติรายบุคคลถูกบันทึกใน AdminLog</p>
+        <div id="personOut"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const ss = {
+    get: k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } },
+    set: (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} },
+    del: k => { try { sessionStorage.removeItem(k); } catch (e) {} },
+  };
+  let adminToken = ss.get('op_admin');
+  let optionsLoaded = false;
+  const fmt = n => (n === null || n === undefined) ? '–' : Number(n).toLocaleString('th-TH');
+
+  async function api(action, data = {}) {
+    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(Object.assign({ action, adminToken, ua: navigator.userAgent }, data)) });
+    const j = await res.json();
+    if (j.error === 'admin_session_expired') { logoutLocal(); throw new Error('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่'); }
+    return j;
+  }
+  function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 3500); }
+
+  // ---------- login ----------
+  function showLogin() { $('appView').hidden = true; $('loginView').hidden = false; $('pw').focus(); }
+  function logoutLocal() { adminToken = null; ss.del('op_admin'); showLogin(); }
+
+  $('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const err = $('loginErr'); err.textContent = '';
+    const password = $('pw').value;
+    if (!password) { err.textContent = 'กรุณากรอกรหัสผ่าน'; return; }
+    $('loginBtn').disabled = true;
+    try {
+      const r = await api('adminLogin', { password });
+      if (r.ok) { adminToken = r.adminToken; ss.set('op_admin', adminToken); $('pw').value = ''; startApp(); }
+      else if (r.error === 'locked') err.textContent = 'ใส่รหัสผิดหลายครั้ง ระบบล็อก ' + r.minutes + ' นาที';
+      else if (r.error === 'no_password') err.textContent = 'ยังไม่ได้ตั้งรหัสผ่าน ตั้งได้ที่เมนู One Page ใน Google Sheet';
+      else if (r.error === 'wrong_password') err.textContent = 'รหัสผ่านไม่ถูกต้อง เหลืออีก ' + r.left + ' ครั้งก่อนล็อก';
+      else err.textContent = 'เข้าสู่ระบบไม่สำเร็จ';
+    } catch (ex) { err.textContent = ex.message || 'เชื่อมต่อระบบไม่ได้'; }
+    finally { $('loginBtn').disabled = false; }
+  });
+  $('logoutBtn').addEventListener('click', () => { api('adminLogout').catch(() => {}); logoutLocal(); });
+
+  // ---------- ช่วงวันที่ ----------
+  const iso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  function setQuick(q) {
+    const now = new Date(); let from;
+    if (q === 'month') from = new Date(now.getFullYear(), now.getMonth(), 1);
+    else if (q === 'year') from = new Date(now.getFullYear(), 0, 1);
+    else from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (Number(q) - 1));
+    $('from').value = iso(from); $('to').value = iso(now);
+  }
+  document.querySelectorAll('.quick button').forEach(b => b.addEventListener('click', () => { setQuick(b.dataset.q); load(); }));
+  $('applyBtn').addEventListener('click', load);
+
+  function filters() {
+    return { from: $('from').value, to: $('to').value, type: $('fType').value, category: $('fCat').value, viewerUnit: $('fUnit').value };
+  }
+
+  function startApp() {
+    $('loginView').hidden = true; $('appView').hidden = false;
+    if (!$('from').value) setQuick('30');
+    load();
+  }
+
+  async function load() {
+    $('loading').hidden = false; $('applyBtn').disabled = true;
+    try {
+      const r = await api('adminStats', filters());
+      if (!r.ok) throw new Error('โหลดสถิติไม่สำเร็จ');
+      if (!optionsLoaded) {
+        fill($('fType'), r.options.types); fill($('fCat'), r.options.categories); fill($('fUnit'), r.options.units);
+        optionsLoaded = true;
+      }
+      render(r);
+      $('content').hidden = false;
+    } catch (ex) { toast(ex.message); }
+    finally { $('loading').hidden = true; $('applyBtn').disabled = false; }
+  }
+  function fill(sel, vals) { vals.forEach(v => sel.append(new Option(v, v))); }
+
+  // ---------- แสดงผล ----------
+  function render(r) {
+    const o = r.overview;
+    const tiles = [
+      ['ผู้ใช้ไม่ซ้ำ', fmt(o.users), 'main'],
+      ['อัตราการเข้าถึง', o.reach + '%', '', 'จากบุคลากร ' + fmt(o.staff) + ' คน'],
+      ['การเข้าระบบ', fmt(o.logins)],
+      ['ยอดดู', fmt(o.views)],
+      ['ยอดดาวน์โหลด', fmt(o.downloads)],
+      ['ยอดไลค์', fmt(o.likes)],
+      ['ผลงานที่เผยแพร่', fmt(o.works)],
+    ];
+    $('tiles').innerHTML = '';
+    tiles.forEach(([l, n, cls, sub]) => {
+      const d = document.createElement('div'); d.className = 'tile ' + (cls || '');
+      d.innerHTML = '<div class="n"></div><div class="l"></div>';
+      d.querySelector('.n').textContent = n;
+      d.querySelector('.l').textContent = sub ? l + ' · ' + sub : l;
+      $('tiles').append(d);
+    });
+    drawChart(r.daily);
+
+    table($('tWorks'), [
+      ['id', 'รหัส'], ['title', 'ชื่อผลงาน'], ['unit', 'เจ้าของผลงาน'],
+      ['views', 'ดู', 1], ['downloads', 'ดาวน์โหลด', 1], ['likes', 'ไลค์', 1],
+      ['ratio', 'ดาวน์โหลด/ดู %', 1], ['allViews', 'ดูสะสม', 1], ['allDownloads', 'ดาวน์โหลดสะสม', 1],
+    ], r.works, 'views');
+    table($('tUnits'), [['name', 'สังกัด'], ['users', 'ผู้ใช้', 1], ['views', 'ดู', 1], ['downloads', 'ดาวน์โหลด', 1], ['likes', 'ไลค์', 1]], r.units, 'views');
+    table($('tRoles'), [['name', 'ตำแหน่ง'], ['users', 'ผู้ใช้', 1], ['views', 'ดู', 1], ['downloads', 'ดาวน์โหลด', 1], ['likes', 'ไลค์', 1]], r.roles, 'views');
+    table($('tCross'), [['viewer', 'ผู้ใช้จาก'], ['owner', 'ใช้ผลงานของ'], ['count', 'ครั้ง', 1]], r.cross, 'count');
+    table($('tReview'), [['review', 'วันที่ควรทบทวน'], ['id', 'รหัส'], ['title', 'ชื่อผลงาน'], ['unit', 'เจ้าของผลงาน'], ['overdue', 'สถานะ']],
+      r.reviewDue.map(x => Object.assign({}, x, { overdue: x.overdue ? '<span class="pill over">เลยกำหนด</span>' : '<span class="pill">ใกล้ครบ</span>' })), 'review', ['overdue']);
+    table($('tNoViews'), [['id', 'รหัส'], ['title', 'ชื่อผลงาน'], ['unit', 'เจ้าของผลงาน'], ['lastView', 'ดูล่าสุด']], r.noViews.map(x => Object.assign({}, x, { lastView: x.lastView || 'ยังไม่เคยมีคนดู' })), 'id');
+    table($('tZero'), [['term', 'คำค้น'], ['zero', 'ค้นแล้วไม่เจอ (ครั้ง)', 1]], r.zeroSearches, 'zero');
+    table($('tTop'), [['term', 'คำค้น'], ['count', 'ครั้ง', 1], ['zero', 'ไม่เจอ', 1]], r.topSearches, 'count');
+  }
+
+  /** ตารางเรียงได้: cols = [key, หัวข้อ, เป็นตัวเลข] htmlKeys = คอลัมน์ที่เป็น HTML ที่ระบบสร้างเอง */
+  function table(box, cols, rows, sortKey, htmlKeys = []) {
+    let key = sortKey, dir = 'desc';
+    const numeric = Object.fromEntries(cols.map(c => [c[0], !!c[2]]));
+    if (!numeric[key]) dir = 'asc';
+    const draw = () => {
+      const sorted = rows.slice().sort((a, b) => {
+        const x = a[key], y = b[key];
+        const v = numeric[key] ? (Number(x ?? -1) - Number(y ?? -1)) : String(x ?? '').localeCompare(String(y ?? ''), 'th');
+        return dir === 'asc' ? v : -v;
+      });
+      if (!rows.length) { box.innerHTML = '<div class="empty">ไม่มีข้อมูลในช่วงนี้</div>'; return; }
+      const t = document.createElement('table');
+      const tr = document.createElement('tr');
+      cols.forEach(([k, label, num]) => {
+        const th = document.createElement('th'); th.textContent = label; if (num) th.className = 'num';
+        th.scope = 'col'; th.tabIndex = 0;
+        if (k === key) th.dataset.dir = dir;
+        const go = () => { if (key === k) dir = dir === 'asc' ? 'desc' : 'asc'; else { key = k; dir = num ? 'desc' : 'asc'; } draw(); };
+        th.addEventListener('click', go); th.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+        tr.append(th);
+      });
+      const thead = document.createElement('thead'); thead.append(tr); t.append(thead);
+      const tb = document.createElement('tbody');
+      sorted.forEach(r => {
+        const row = document.createElement('tr');
+        cols.forEach(([k, , num]) => {
+          const td = document.createElement('td'); if (num) td.className = 'num';
+          if (htmlKeys.includes(k)) td.innerHTML = r[k]; else td.textContent = num ? fmt(r[k]) : (r[k] ?? '');
+          row.append(td);
+        });
+        tb.append(row);
+      });
+      t.append(tb); box.innerHTML = ''; box.append(t);
+    };
+    draw();
+  }
+
+  function drawChart(days) {
+    const W = 900, H = 220, L = 36, R = 12, T = 12, B = 28;
+    const max = Math.max(1, ...days.map(d => Math.max(d.users, d.views)));
+    const x = i => L + (days.length <= 1 ? 0 : i * (W - L - R) / (days.length - 1));
+    const y = v => T + (H - T - B) * (1 - v / max);
+    const path = k => days.map((d, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(d[k]).toFixed(1)).join('');
+    const ticks = [0, Math.round(max / 2), max];
+    const step = Math.max(1, Math.ceil(days.length / 8));
+    const th = s => { const [yy, m, d] = s.split('-'); return Number(d) + '/' + Number(m); };
+    let g = '';
+    ticks.forEach(v => { g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#E6EBF0"/><text x="${L - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="#6B7A8C">${v}</text>`; });
+    days.forEach((d, i) => { if (i % step === 0 || i === days.length - 1) g += `<text x="${x(i)}" y="${H - 8}" font-size="11" text-anchor="middle" fill="#6B7A8C">${th(d.day)}</text>`; });
+    const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กราฟผู้ใช้และยอดดูรายวัน">${g}
+      <path d="${path('views')}" fill="none" stroke="#7C8CF8" stroke-width="2"/>
+      <path d="${path('users')}" fill="none" stroke="#12A38A" stroke-width="2.5"/></svg>`;
+    $('chart').innerHTML = svg;
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    document.querySelectorAll('.panel').forEach(p => p.hidden = p.dataset.p !== b.dataset.t);
+  }));
+
+  // ---------- รายบุคคล ----------
+  $('personForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const sap = $('psap').value.trim(); if (!sap) return;
+    const out = $('personOut'); out.innerHTML = '<div class="loading">กำลังค้นหา…</div>';
+    try {
+      const r = await api('adminPerson', { sap });
+      if (!r.ok || !r.total) { out.innerHTML = '<div class="empty">ไม่พบประวัติการใช้งานของ SAP ID นี้</div>'; return; }
+      out.innerHTML = '';
+      const head = document.createElement('p');
+      head.textContent = `${r.name} · ${r.role} · ${r.unit} — เข้าระบบ ${fmt(r.summary.logins)} ครั้ง ดู ${fmt(r.summary.views)} ดาวน์โหลด ${fmt(r.summary.downloads)} ไลค์ ${fmt(r.summary.likes)}` + (r.total > 500 ? ` (แสดง 500 จาก ${fmt(r.total)} รายการล่าสุด)` : '');
+      const box = document.createElement('div'); box.className = 'tbl';
+      out.append(head, box);
+      table(box, [['time', 'เวลา'], ['action', 'การกระทำ'], ['id', 'รหัส'], ['title', 'ผลงาน'], ['device', 'อุปกรณ์']], r.events, 'time');
+    } catch (ex) { out.innerHTML = ''; toast(ex.message); }
+  });
+
+  // ---------- export ----------
+  document.querySelectorAll('[data-export]').forEach(b => b.addEventListener('click', async () => {
+    const kind = b.dataset.export;
+    if (kind === 'raw' && !confirm('ไฟล์นี้มี SAP ID ชื่อ และพฤติกรรมการใช้งานรายบุคคล ซึ่งเป็นข้อมูลส่วนบุคคล\nการ export จะถูกบันทึกไว้ ต้องการดำเนินการต่อหรือไม่')) return;
+    b.disabled = true;
+    try {
+      const f = filters();
+      const r = await api('adminExport', Object.assign({ kind }, f));
+      if (!r.ok) throw new Error('export ไม่สำเร็จ');
+      const blob = new Blob([r.csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${r.label}_${f.from}_${f.to}.csv`;
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      toast(`ดาวน์โหลด ${r.label} ${fmt(r.rows)} แถว`);
+    } catch (ex) { toast(ex.message); }
+    finally { b.disabled = false; }
+  }));
+
+  if (adminToken) startApp(); else showLogin();
+})();
+</script>
+</body>
+</html>
