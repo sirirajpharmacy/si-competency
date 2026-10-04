@@ -151,6 +151,9 @@
     aspect-ratio: 4 / 3; background: #F4F6F8; border-bottom: 1px solid var(--line); position: relative; overflow: hidden;
     display: grid; place-items: center; color: var(--ink-soft); font-size: 13px;
   }
+  button.thumb { border: 0; border-bottom: 1px solid var(--line); padding: 0; width: 100%; cursor: pointer; font: inherit; }
+  button.thumb:hover img { opacity: .88; }
+  button.thumb:focus-visible { outline-offset: -3px; }
   .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
   .fmt {
     position: absolute; left: 10px; top: 10px;
@@ -487,7 +490,7 @@
     li.className = 'card';
     li.dataset.id = it.id;
     li.innerHTML = `
-      <div class="thumb">${it.hasThumb ? '' : 'ไม่มีภาพตัวอย่าง'}<span class="fmt"></span></div>
+      <button type="button" class="thumb">${it.hasThumb ? '' : 'ไม่มีภาพตัวอย่าง'}<span class="fmt"></span></button>
       <div class="card-body">
         <h3></h3>
         <p class="purpose"></p>
@@ -509,6 +512,8 @@
     li.querySelector('.sent').textContent = [it.category, it.submitted ? 'ส่งเมื่อ ' + thaiMonthYear(it.submitted) : ''].filter(Boolean).join(' · ');
     updateStats(li, it);
     li.querySelector('.view').addEventListener('click', () => openWork(it, 'view'));
+    li.querySelector('.thumb').setAttribute('aria-label', 'ดูผลงาน ' + it.title);
+    li.querySelector('.thumb').addEventListener('click', () => openWork(it, 'view'));
     li.querySelector('.dl').addEventListener('click', () => openWork(it, 'download'));
     li.querySelector('.like').addEventListener('click', () => toggleLike(it, li));
     if (thumbCache[it.id]) setThumb(li, thumbCache[it.id], it.title);
