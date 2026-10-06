@@ -377,6 +377,7 @@
   function logoutLocal() {
     token = null;
     store.del('op_token');
+    store.del('op_list');
     showLogin();
   }
 
@@ -393,7 +394,7 @@
         token = r.token;
         store.set('op_token', token);
         $('sap').value = '';
-        startApp(r.firstName);
+        startApp(r.firstName, r.list);
       } else if (r.error === 'locked') {
         err.textContent = 'กรอกผิดหลายครั้ง กรุณารอ ' + r.minutes + ' นาทีแล้วลองใหม่';
       } else if (r.error === 'not_found') {
@@ -414,25 +415,41 @@
   });
 
   // ---------- โหลดรายการ ----------
-  async function startApp(firstName) {
+  function applyList(r) {
+    if (r.firstName) $('hello').textContent = 'สวัสดี คุณ' + r.firstName;
+    items = r.items;
+    popular = r.popular || [];
+    buildFilters();
+    renderPopular();
+    render();
+  }
+
+  async function startApp(firstName, preloaded) {
     $('loginView').hidden = true;
     $('appView').hidden = false;
     $('hello').textContent = firstName ? 'สวัสดี คุณ' + firstName : '';
-    $('loading').hidden = false;
     $('loadFail').hidden = true;
-    $('grid').innerHTML = '';
+
+    // แสดงรายการที่จำไว้จากครั้งก่อนทันที ระหว่างรอข้อมูลใหม่
+    let shown = false;
+    if (!preloaded) {
+      try {
+        const saved = JSON.parse(store.get('op_list') || 'null');
+        if (saved && saved.items) { applyList(saved); shown = true; }
+      } catch (e) {}
+    }
+    $('loading').hidden = shown;
+    if (!shown) $('grid').innerHTML = '';
+
     try {
-      const r = await api('list');
+      const r = preloaded || await api('list');
       if (!r.ok) throw new Error('โหลดรายการไม่สำเร็จ');
-      if (r.firstName) $('hello').textContent = 'สวัสดี คุณ' + r.firstName;
-      items = r.items;
-      popular = r.popular || [];
-      buildFilters();
-      renderPopular();
-      render();
+      applyList(r);
+      store.set('op_list', JSON.stringify({ firstName: r.firstName, items: r.items, popular: r.popular }));
     } catch (ex) {
-      $('loadFailText').textContent = ex.message;
-      $('loadFail').hidden = false;
+      if (!token) return;
+      if (shown) toast('ยังอัปเดตรายการล่าสุดไม่ได้ กำลังแสดงข้อมูลที่บันทึกไว้');
+      else { $('loadFailText').textContent = ex.message; $('loadFail').hidden = false; }
     } finally {
       $('loading').hidden = true;
     }
@@ -597,7 +614,28 @@
     thumbTimer = setTimeout(loadThumbs, 120);
   }, { rootMargin: '300px' }) : null;
 
+  function thumbKey(it) { return 'op_th:' + it.id + ':' + (it.tv || ''); }
+  function saveThumb(it, data) {
+    try { localStorage.setItem(thumbKey(it), data); }
+    catch (e) {
+      // เต็ม: ล้างภาพที่จำไว้ทั้งหมดแล้วเริ่มใหม่
+      try { Object.keys(localStorage).filter(k => k.indexOf('op_th:') === 0).forEach(k => localStorage.removeItem(k)); } catch (e2) {}
+    }
+  }
+
   function observeThumbs() {
+    items.forEach(it => {
+      if (it.hasThumb && !thumbCache[it.id]) {
+        const saved = store.get(thumbKey(it));
+        if (saved) thumbCache[it.id] = saved;
+      }
+    });
+    document.querySelectorAll('#grid .card').forEach(li => {
+      if (thumbCache[li.dataset.id]) {
+        const it = items.find(i => i.id === li.dataset.id);
+        if (it) setThumb(li, thumbCache[it.id], it.title);
+      }
+    });
     document.querySelectorAll('#grid .card').forEach(li => {
       const it = items.find(i => i.id === li.dataset.id);
       if (!it || !it.hasThumb || thumbCache[it.id]) return;
@@ -607,13 +645,15 @@
   }
 
   async function loadThumbs() {
-    const ids = [...pending].slice(0, 24);
+    const ids = [...pending].slice(0, 30);
     if (!ids.length) return;
     ids.forEach(id => pending.delete(id));
     try {
       const r = await api('thumbs', { ids });
       Object.entries(r.thumbs || {}).forEach(([id, data]) => {
         thumbCache[id] = data;
+        const itm = items.find(i => i.id === id);
+        if (itm) saveThumb(itm, data);
         const li = document.querySelector('#grid .card[data-id="' + CSS.escape(id) + '"]');
         const it = items.find(i => i.id === id);
         if (li && it) setThumb(li, data, it.title);
@@ -688,7 +728,7 @@
 
   // ---------- เริ่มต้น ----------
   if (token) {
-    api('me').then(r => r.ok ? startApp(r.firstName) : showLogin()).catch(() => showLogin());
+    startApp();
   } else {
     showLogin();
   }
