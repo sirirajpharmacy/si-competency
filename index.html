@@ -305,7 +305,8 @@
     del(k) { try { localStorage.removeItem(k); } catch (e) {} },
   };
   const TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-  const FORMAT_LABEL = { pdf: 'PDF', image: 'ภาพ', video: 'วิดีโอ' };
+  const FORMAT_LABEL = { pdf: 'PDF', image: 'ภาพ', video: 'วิดีโอ', youtube: 'YouTube', web: 'เว็บไซต์' };
+  const isLink = it => it.kind === 'youtube' || it.kind === 'web';
 
   let token = store.get('op_token');
   let items = [];
@@ -511,10 +512,14 @@
     li.querySelector('.unit').textContent = it.unit;
     li.querySelector('.sent').textContent = [it.category, it.submitted ? 'ส่งเมื่อ ' + thaiMonthYear(it.submitted) : ''].filter(Boolean).join(' · ');
     updateStats(li, it);
+    if (it.kind === 'youtube') li.querySelector('.view').textContent = 'ดูวิดีโอ';
+    if (it.kind === 'web') li.querySelector('.view').textContent = 'เปิดเว็บไซต์';
+    if (isLink(it)) li.querySelector('.dl').remove();
     li.querySelector('.view').addEventListener('click', () => openWork(it, 'view'));
     li.querySelector('.thumb').setAttribute('aria-label', 'ดูผลงาน ' + it.title);
     li.querySelector('.thumb').addEventListener('click', () => openWork(it, 'view'));
-    li.querySelector('.dl').addEventListener('click', () => openWork(it, 'download'));
+    const dl = li.querySelector('.dl');
+    if (dl) dl.addEventListener('click', () => openWork(it, 'download'));
     li.querySelector('.like').addEventListener('click', () => toggleLike(it, li));
     if (thumbCache[it.id]) setThumb(li, thumbCache[it.id], it.title);
     return li;
@@ -522,7 +527,7 @@
 
   function updateStats(li, it) {
     li.querySelector('.sv').textContent = 'ดู ' + it.views.toLocaleString('th-TH');
-    li.querySelector('.sd').textContent = 'ดาวน์โหลด ' + it.downloads.toLocaleString('th-TH');
+    li.querySelector('.sd').textContent = isLink(it) ? '' : 'ดาวน์โหลด ' + it.downloads.toLocaleString('th-TH');
     const like = li.querySelector('.like');
     like.setAttribute('aria-pressed', String(!!it.liked));
     like.setAttribute('aria-label', (it.liked ? 'เลิกถูกใจ ' : 'ถูกใจ ') + it.title);
@@ -600,7 +605,8 @@
   let pendingOpen = null;
 
   function openWork(it, kind) {
-    if (store.get('op_skip_notice') === '1') { go(it, kind); return; }
+    // YouTube / เว็บไซต์ ไม่ต้องใช้บัญชี Mahidol จึงไม่ต้องแจ้งเรื่อง Google Drive
+    if (isLink(it) || store.get('op_skip_notice') === '1') { go(it, kind); return; }
     pendingOpen = { it, kind };
     $('dontShow').checked = false;
     $('driveDlg').showModal();
