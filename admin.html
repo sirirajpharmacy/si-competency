@@ -206,11 +206,22 @@
   let optionsLoaded = false;
   const fmt = n => (n === null || n === undefined) ? '–' : Number(n).toLocaleString('th-TH');
 
+  // ลองใหม่อัตโนมัติเมื่อ Google ตอบกลับผิดรูปแบบ
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
   async function api(action, data = {}) {
-    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(Object.assign({ action, adminToken, ua: navigator.userAgent }, data)) });
-    const j = await res.json();
-    if (j.error === 'admin_session_expired') { logoutLocal(); throw new Error('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่'); }
-    return j;
+    const body = JSON.stringify(Object.assign({ action, adminToken, ua: navigator.userAgent }, data));
+    let lastError = 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง';
+    for (let attempt = 0; attempt <= 3; attempt++) {
+      if (attempt) await sleep(800 * attempt + Math.random() * 400);
+      let text;
+      try { text = await (await fetch(API_URL, { method: 'POST', body })).text(); }
+      catch (e) { lastError = 'เชื่อมต่อระบบไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ต'; continue; }
+      let j;
+      try { j = JSON.parse(text); } catch (e) { console.warn('[API] ตอบกลับไม่ใช่ JSON', text.slice(0, 200)); continue; }
+      if (j.error === 'admin_session_expired') { logoutLocal(); throw new Error('หมดเวลาการใช้งาน กรุณาเข้าสู่ระบบใหม่'); }
+      return j;
+    }
+    throw new Error(lastError);
   }
   function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 3500); }
 

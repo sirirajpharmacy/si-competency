@@ -276,6 +276,10 @@
     </div>
     <div class="loading" id="loading">กำลังโหลดรายการผลงาน…</div>
     <ul class="grid" id="grid"></ul>
+    <div class="empty" id="loadFail" hidden>
+      <p id="loadFailText"></p>
+      <button class="btn" type="button" id="retryBtn">โหลดรายการอีกครั้ง</button>
+    </div>
     <div class="empty" id="empty" hidden>
       <p id="emptyText"></p>
       <button class="btn ghost" type="button" id="resetBtn">ล้างคำค้นและตัวกรอง</button>
@@ -320,15 +324,39 @@
     return d;
   }
 
+  // ส่งคำขอพร้อมกันได้ไม่เกิน 2 รายการ และลองใหม่อัตโนมัติเมื่อ Google ตอบกลับผิดรูปแบบ
+  const MAX_PARALLEL = 2, RETRIES = 3;
+  let running = 0;
+  const waiting = [];
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  async function slot(fn) {
+    if (running >= MAX_PARALLEL) await new Promise(r => waiting.push(r));
+    running++;
+    try { return await fn(); } finally { running--; const next = waiting.shift(); if (next) next(); }
+  }
+
   async function api(action, data = {}) {
     if (!/^https:\/\/script\.google\.com\//.test(API_URL)) throw new Error('ยังไม่ได้ใส่ API_URL ในไฟล์ index.html');
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify(Object.assign({ action, token, ua: navigator.userAgent }, data)),
-    });
-    const json = await res.json();
-    if (json.error === 'session_expired') { logoutLocal(); throw new Error('หมดเวลาการใช้งาน กรุณากรอก SAP ID อีกครั้ง'); }
-    return json;
+    const body = JSON.stringify(Object.assign({ action, token, ua: navigator.userAgent }, data));
+    let lastError = 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง';
+    for (let attempt = 0; attempt <= RETRIES; attempt++) {
+      if (attempt) await sleep(700 * attempt + Math.random() * 400);
+      let text = '';
+      try {
+        text = await slot(async () => (await fetch(API_URL, { method: 'POST', body })).text());
+      } catch (e) {
+        lastError = 'เชื่อมต่อระบบไม่ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่';
+        continue;
+      }
+      let json;
+      try { json = JSON.parse(text); } catch (e) {
+        console.warn('[API] ตอบกลับไม่ใช่ JSON (ครั้งที่ ' + (attempt + 1) + ')', text.slice(0, 200));
+        continue;
+      }
+      if (json.error === 'session_expired') { logoutLocal(); throw new Error('หมดเวลาการใช้งาน กรุณากรอก SAP ID อีกครั้ง'); }
+      return json;
+    }
+    throw new Error(lastError);
   }
 
   function toast(text) {
@@ -391,6 +419,7 @@
     $('appView').hidden = false;
     $('hello').textContent = firstName ? 'สวัสดี คุณ' + firstName : '';
     $('loading').hidden = false;
+    $('loadFail').hidden = true;
     $('grid').innerHTML = '';
     try {
       const r = await api('list');
@@ -402,11 +431,13 @@
       renderPopular();
       render();
     } catch (ex) {
-      toast(ex.message);
+      $('loadFailText').textContent = ex.message;
+      $('loadFail').hidden = false;
     } finally {
       $('loading').hidden = true;
     }
   }
+  $('retryBtn').addEventListener('click', () => startApp());
 
   function uniq(key) {
     return [...new Set(items.map(i => i[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'th'));
